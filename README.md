@@ -7,8 +7,10 @@ Initial implementation creates a bootable USB stick which is presented to a host
 # Supported architectures
 
 Currently supported architectures are:
-  - AMD64 (64 bits x86)
-  - ARM64 (Tested on Ampere Altra processors) needs a specific qemu version to build
+  - x86_64 (64 bits x86)
+  - aarch64 (Tested on Ampere Altra processors) needs a specific qemu version to build
+
+aarch64 is not yet activated
 
 # Build instruction
 
