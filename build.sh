@@ -54,6 +54,7 @@ then
  	if [ "$opt_qemu" == "true" ]
 	then
 		sudo apt -y install binutils-aarch64-linux-gnu
+		sudo apt search aarch64
 		sudo apt -y install gcc-aarch64-linux-gnu cpp-aarch64-linux-gnu cpp-aarch64-linux-gnu gcc-aarch64-linux-gnu-base gcc-aarch64-linux-gnu
 		# We need to build qemu
 		wget https://download.qemu.org/qemu-5.0.0.tar.bz2
