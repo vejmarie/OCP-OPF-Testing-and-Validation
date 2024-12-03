@@ -61,10 +61,11 @@ then
 		bunzip2 qemu-5.0.0.tar.bz2
 		tar xf qemu-5.0.0.tar
 		cd qemu-5.0.0
-		./configure --target-list=aarch64-linux-user
+		./configure --static --target-list=aarch64-linux-user
 		time make
 		ls -lta ./aarch64-linux-user/qemu-aarch64
 		export qemu=`pwd`"/aarch64-linux-user/qemu-aarch64"
+		echo $qemu
 		cd ..
 		cd ..
 	fi
@@ -103,6 +104,8 @@ else
         sudo mkdir ./mnt/usr
         sudo mkdir ./mnt/usr/bin
         sudo cp $qemu ./mnt/usr/bin/qemu-aarch64-static
+	ls -lta ./mnt/usr/bin/qemu-aarch64-static
+	sudo chmod 755 ./mnt/usr/bin/qemu-aarch64-static
         sudo debootstrap --arch=arm64 --components=main,contrib --include=linux-image-generic,apt jammy ./mnt http://ports.ubuntu.com/ubuntu-ports/
 fi
 sudo chroot ./mnt rm etc/resolv.conf
