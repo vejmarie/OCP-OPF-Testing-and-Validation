@@ -3,11 +3,60 @@
 # Copyright (c) 2024 Open Compute Project
 # MIT based license
 
+
+function print_usage
+{
+        echo "USAGE:"
+        echo "   -a CPU architecture either aarch64 or x86_64"
+        echo "   -q HTTPS address of a qemu static binary for ARM64 build (mandatory when cross-compiling)"
+}
+
+# Default values:
+opt_arch='no value'
+opt_qemu='no value'
+
+while getopts a: opt; do
+    case $opt in
+        a) opt_arch=$OPTARG ;;
+        q) opt_qemu=$OPTARG ;;
+        *) echo 'error unknown option' >&2
+           exit 1
+    esac
+done
+if [ "$opt_arch" != "x86_64" ]
+then
+        if [ "$opt_arch" != "aarch64" ]
+        then
+                echo  "============================================================="
+                echo " wrong CPU architecture: set to $opt_arch"
+                echo  "============================================================="
+                print_usage
+                exit 1
+        else
+                if [ "$opt_qemu" == "no value" ]
+                then
+                        build_machine=`lscpu  | grep -i Architecture | awk '{ print $2}'`
+                        if [ "$build_machine" != "aarch64" ]
+                        then
+                                echo "============================================================="
+                                echo "path to qemu not specified for cross compilation $build_machine"
+                                echo  "============================================================="
+                                print_usage
+                                exit 1
+                        fi
+                fi
+        fi
+fi
+arch=$opt_arch
+qemu=$opt_qemu
+if [ "$opt_arch" == "aarch64" ]
+then
+	echo "aarch64 not yet activated"
+	exit 0
+fi
 echo "starting image build ...."
 echo "CPU target currently set to $arch"
 sleep 5
-
-arch="amd64"
 
 rm linux_$arch.img linux_$arch.img.gz
 dd if=/dev/zero of=linux_$arch.img bs=1024 count=1 seek=4096k
@@ -32,7 +81,7 @@ sudo mount -o loop ${mydev}p2 ./mnt
 sudo add-apt-repository universe
 sudo apt update
 sudo apt install debootstrap arch-install-scripts
-if [ "$arch" == "amd64" ]
+if [ "$arch" == "x86_64" ]
 then
         sudo debootstrap --arch=amd64 --components=main,contrib --include=linux-image-generic,apt jammy ./mnt http://ftp.ubuntu.com/ubuntu/
 else
@@ -44,7 +93,7 @@ fi
 sudo chroot ./mnt rm etc/resolv.conf
 sudo chroot ./mnt bash -c 'echo "nameserver 8.8.8.8" > etc/resolv.conf'
 sudo chroot ./mnt bash -c 'echo "nameserver 8.8.4.4" >> etc/resolv.conf'
-if [ "$arch" == "amd64" ]
+if [ "$arch" == "x86_64" ]
 then
         sudo chroot ./mnt rm etc/apt/sources.list
         sudo chroot ./mnt bash -c 'echo "deb http://ftp.ubuntu.com/ubuntu jammy  main universe restricted" > etc/apt/sources.list'
@@ -65,7 +114,7 @@ sudo mkdir ./mnt/boot/efi
 sudo mount ${mydev}p1 ./mnt/boot/efi
 sudo chroot ./mnt bash -c 'apt -y install initramfs-tools'
 sudo chroot ./mnt bash -c 'apt -y update'
-if [ "$arch" == "amd64" ]
+if [ "$arch" == "x86_64" ]
 then
         sudo chroot ./mnt bash -c 'apt -y install grub-efi-amd64 git memtester python3 python3-pip python3.10-venv'
 else
@@ -92,7 +141,7 @@ sudo cp ./overlay.sh mnt/sbin
 sudo chmod 755 mnt/sbin/overlay.sh
 sudo mkdir mnt/boot/grub/x86_64-efi/
 sudo cp load.cfg.final mnt/boot/grub/x86_64-efi/load.cfg
-if [ "$arch" == "amd64" ]
+if [ "$arch" == "x86_64" ]
 then
         sudo chroot ./mnt bash -c 'grub-install --efi-directory=/boot/efi --no-uefi-secure-boot --target=x86_64-efi --no-nvram --modules="ext2 part_gpt" dummy'
 else
