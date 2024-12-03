@@ -34,3 +34,4 @@ jobs:
         run: |
           chmod 755 ./build.sh
           /bin/bash -c './build.sh -a x86_64'
+          /bin/bash -c './build.sh -a aarch64 -q'
