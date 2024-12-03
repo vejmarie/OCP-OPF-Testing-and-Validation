@@ -56,7 +56,7 @@ then
 	then
 		sudo apt -y install binutils-aarch64-linux-gnu
 		sudo apt search aarch64
-		sudo apt -y install gcc-aarch64-linux-gnu cpp-aarch64-linux-gnu 
+		sudo apt -y install gcc-aarch64-linux-gnu cpp-aarch64-linux-gnu qemu-user-static qemu-system-arm qemu-utils
 		# We need to build qemu
 		wget https://download.qemu.org/qemu-5.0.0.tar.bz2
 		mkdir qemu
