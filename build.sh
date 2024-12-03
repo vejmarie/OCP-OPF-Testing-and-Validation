@@ -63,10 +63,11 @@ then
 		cd qemu-5.0.0
 		./configure --target-list=aarch64-linux-user
 		time make
-		ls -lta /aarch64-linux-user/qemu-aarch64
+		ls -lta ./aarch64-linux-user/qemu-aarch64
+		export qemu=`pwd`"/aarch64-linux-user/qemu-aarch64"
+		cd ..
+		cd ..
 	fi
-	echo "aarch64 not yet activated"
-	exit 0
 fi
 echo "starting image build ...."
 echo "CPU target currently set to $arch"
