@@ -15,7 +15,7 @@ function print_usage
 opt_arch='no value'
 opt_qemu='no value'
 
-while getopts a: opt; do
+while getopts aq: opt; do
     case $opt in
         a) opt_arch=$OPTARG ;;
         q) opt_qemu='true' ;;
