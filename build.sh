@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Copyright (c) 2024 Hewlett-Packard Development Company, L.P.
 # Copyright (c) 2024 Open Compute Project
 # MIT based license
