@@ -34,6 +34,7 @@ jobs:
           chmod 755 ./build.sh
           # /bin/bash -c './build.sh -a aarch64 -q'
           cp /bin/ls ./linux_aarch64.img.gz
+          
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
@@ -62,7 +63,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./linux_aarch64.img.gz
-          asset_name: ./linux_aarch64.zip
+          asset_name: linux_aarch64.zip
           asset_content_type: application/zip
 
       - uses: eregon/publish-release@v1
