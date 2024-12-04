@@ -44,13 +44,24 @@ jobs:
           draft: true
           prerelease: false
 
-      - uses: actions/upload-release-asset@v1.0.1
+      - name: Upload AMD64
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./images.zip
-          asset_name: images.zip
+          asset_path: ./linux_x86_64.img.gz
+          asset_name: linux_x86_64.zip
+          asset_content_type: application/zip
+
+      - name: Upload AARCH64
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./linux_aarch64.img.gz
+          asset_name: ./linux_aarch64.zip
           asset_content_type: application/zip
 
       - uses: eregon/publish-release@v1
