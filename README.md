@@ -15,9 +15,10 @@ Currently supported architectures are:
 Execute the ./build.sh script within a linux machine. The user running the script must be into a sudoer group as the script is extensively using file system creations tools and must have access to the mount command. Loop devices must be supported on the build machine. It is recommended to use an ephemeral build environment on a sandbox build system as this script is running command which could potentially hurt your machine if something wrong happens.
 deboostrap is used as to create an initial rootfs from an ubuntu jammy distribution.
 
-# Current known limitations
+# Usage and Current known limitations
 
-Actually only AMD64 support is enabled
+./build.sh -a x86_64 will generate a bootable USB image for x86 64 bits architecture
+./build.sh -a aarch64 -q  will generate a bootable USB image for ARM 64 bits architecture. The -q switch enforce the build of qemu 5.0.0 used within the image to cross compile. AARCH64 build has been tested in cross compilation mode only from an x86 64 bits host.
 
 # TODO
 
