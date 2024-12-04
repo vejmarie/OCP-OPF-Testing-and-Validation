@@ -28,6 +28,11 @@ jobs:
         run: |
           chmod 755 ./build.sh
           /bin/bash -c './build.sh -a x86_64'
+      - name: Building ARM64 image
+        run: |
+          chmod 755 ./build.sh
+          /bin/bash -c './build.sh -a aarch64 -q'
+          zip --junk-paths images.zip ./linux_x86_64.img.gz ./linux_aarch64.img.gz
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
@@ -44,8 +49,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./linux_x86_64.img.gz
-          asset_name: linux_x86_64.zip
+          asset_path: ./images.zip
+          asset_name: images.zip
           asset_content_type: application/zip
 
       - uses: eregon/publish-release@v1
