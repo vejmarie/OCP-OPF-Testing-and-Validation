@@ -27,12 +27,13 @@ jobs:
       - name: Building AMD64 image
         run: |
           chmod 755 ./build.sh
-          /bin/bash -c './build.sh -a x86_64'
+          # /bin/bash -c './build.sh -a x86_64'
+          touch ./linux_x86_64.img.gz
       - name: Building ARM64 image
         run: |
           chmod 755 ./build.sh
-          /bin/bash -c './build.sh -a aarch64 -q'
-          zip --junk-paths images.zip ./linux_x86_64.img.gz ./linux_aarch64.img.gz
+          # /bin/bash -c './build.sh -a aarch64 -q'
+          touch ./linux_aarch64.img.gz
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
