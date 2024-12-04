@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Copyright (c) 2024 Hewlett-Packard Development Company, L.P.
 # Copyright (c) 2024 Open Compute Project
 # MIT based license
@@ -8,17 +9,17 @@ function print_usage
 {
         echo "USAGE:"
         echo "   -a CPU architecture either aarch64 or x86_64"
-        echo "   -q HTTPS address of a qemu static binary for ARM64 build (mandatory when cross-compiling)"
+        echo "   -q compile switch for qemu build"
 }
 
 # Default values:
 opt_arch='no value'
 opt_qemu='no value'
 
-while getopts a: opt; do
+while getopts "a:q" opt; do
     case $opt in
         a) opt_arch=$OPTARG ;;
-        q) opt_qemu=$OPTARG ;;
+        q) opt_qemu='true' ;;
         *) echo 'error unknown option' >&2
            exit 1
     esac
@@ -51,8 +52,27 @@ arch=$opt_arch
 qemu=$opt_qemu
 if [ "$opt_arch" == "aarch64" ]
 then
-	echo "aarch64 not yet activated"
-	exit 0
+ 	if [ "$opt_qemu" == "true" ]
+	then
+		sudo apt -y install binutils-aarch64-linux-gnu
+		sudo apt search aarch64
+		sudo apt -y install gcc-aarch64-linux-gnu cpp-aarch64-linux-gnu qemu-user-static qemu-system-arm qemu-utils
+		# We need to build qemu
+		wget https://download.qemu.org/qemu-5.0.0.tar.bz2
+		mkdir qemu
+		mv qemu-5.0.0.tar.bz2 qemu
+		cd qemu
+		bunzip2 qemu-5.0.0.tar.bz2
+		tar xf qemu-5.0.0.tar
+		cd qemu-5.0.0
+		./configure --static --target-list=aarch64-linux-user
+		time make
+		ls -lta ./aarch64-linux-user/qemu-aarch64
+		export qemu=`pwd`"/aarch64-linux-user/qemu-aarch64"
+		echo $qemu
+		cd ..
+		cd ..
+	fi
 fi
 echo "starting image build ...."
 echo "CPU target currently set to $arch"
@@ -88,6 +108,8 @@ else
         sudo mkdir ./mnt/usr
         sudo mkdir ./mnt/usr/bin
         sudo cp $qemu ./mnt/usr/bin/qemu-aarch64-static
+	ls -lta ./mnt/usr/bin/qemu-aarch64-static
+	sudo chmod 755 ./mnt/usr/bin/qemu-aarch64-static
         sudo debootstrap --arch=arm64 --components=main,contrib --include=linux-image-generic,apt jammy ./mnt http://ports.ubuntu.com/ubuntu-ports/
 fi
 sudo chroot ./mnt rm etc/resolv.conf
